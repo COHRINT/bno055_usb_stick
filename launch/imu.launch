@@ -1,0 +1,12 @@
+<launch>
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 bno055 imu_link" />
+
+    <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055_usb_stick_node" output="screen">
+        <param name="mode" value="ndof" />
+        <param name="publish_tf" value="true" />
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bno055_usb_stick)/utils/view_imu_rviz.rviz" />
+
+</launch>
