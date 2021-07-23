@@ -56,9 +56,9 @@ int main(int argc, char *argv[]) {
   ros::NodeHandle nh;
 
   // load parameters
-  pose_frame_id = ros::param::param< std::string >("~pose_frame_id", "fixed");
+  pose_frame_id = ros::param::param< std::string >("~pose_frame_id", "odom");
   const bool publish_tf(ros::param::param("~publish_tf", false));
-  tf_frame_id = ros::param::param< std::string >("~tf_frame_id", "fixed");
+  tf_frame_id = ros::param::param< std::string >("~tf_frame_id", "odom");
   tf_child_frame_id = ros::param::param< std::string >("~tf_child_frame_id", "bno055");
   invert_tf = ros::param::param("~invert_tf", false);
 

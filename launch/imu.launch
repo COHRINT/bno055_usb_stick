@@ -1,12 +1,33 @@
 <launch>
 
-    <node pkg="tf2_ros" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 bno055 imu_link" />
+    <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 bno055 base_link 100" />
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 bno055 imu_link" /> -->
 
     <node pkg="bno055_usb_stick" type="bno055_usb_stick_node" name="bno055_usb_stick_node" output="screen">
         <param name="mode" value="ndof" />
-        <param name="publish_tf" value="true" />
+        <param name="publish_tf" value="false" />
     </node>
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bno055_usb_stick)/utils/view_imu_rviz.rviz" />
+
+    <node name="madgwick_filter" type="imu_filter_node" pkg="imu_filter_madgwick" >
+        <remap from="imu/data_raw" to="imu" />
+        <remap from="imu/mag" to="magnetic_field" />
+    </node>
+
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" respawn="true">
+        <param name="magnetic_declination_radians" value="0"/>
+        <param name="yaw_offset" value="0"/>
+        <!-- <remap from="/imu/data" to="" /> -->
+        <!-- <remap from="/gps/fix" to="/your/gps/fix/topic" /> -->
+        <!-- <remap from="/odometry/filtered" to="odometry/filtered/odom" /> -->
+  </node>
+
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true">
+        <rosparam command="load" file="$(find seahorse)/params/odom_template.yaml" />
+        <!-- <remap from="odometry/filtered" to="odometry/filtered/odom"/> -->
+    </node>
+
+    <!-- Then connect it to RL; then connect GPS to RL; then walk around-->
 
 </launch>
